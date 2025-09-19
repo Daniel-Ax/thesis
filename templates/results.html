@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="text-2xl font-bold mb-4">Korábbi eredmények</h2>
+  {% if results %}
+    <ul class="space-y-2">
+      {% for res in results %}
+        <li class="bg-gray-800 p-3 rounded-xl">
+          <span class="font-semibold">{{ res.filename }}</span> → {{ res.prediction }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-400">Még nincsenek elmentett eredmények.</p>
+  {% endif %}
+{% endblock %}

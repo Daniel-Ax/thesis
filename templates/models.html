@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="text-2xl font-bold mb-4">Modelljeink</h2>
+  <ul class="space-y-4">
+    <li class="bg-gray-800 p-4 rounded-xl">
+      <h3 class="font-semibold text-lg">CNN (ResNet, DenseNet)</h3>
+      <p class="text-gray-300">Erős lokális mintázatfelismerő képesség, gyors futás. 
+        Hátránya, hogy kevésbé figyeli a globális kontextust.</p>
+    </li>
+    <li class="bg-gray-800 p-4 rounded-xl">
+      <h3 class="font-semibold text-lg">Vision Transformer (ViT)</h3>
+      <p class="text-gray-300">Jobban értékeli a globális összefüggéseket. 
+        Hátránya, hogy több adatot és erőforrást igényel.</p>
+    </li>
+    <li class="bg-gray-800 p-4 rounded-xl">
+      <h3 class="font-semibold text-lg">Hibrid CNN+ViT</h3>
+      <p class="text-gray-300">Kombinálja a CNN és ViT előnyeit. 
+        Általában jobb pontosság, de nagyobb komplexitás.</p>
+    </li>
+    <li class="bg-gray-800 p-4 rounded-xl">
+      <h3 class="font-semibold text-lg">Ensemble módszerek</h3>
+      <p class="text-gray-300">Több modell együttesen dönt (pl. majority voting). 
+        Növeli a megbízhatóságot, de lassabb futású lehet.</p>
+    </li>
+  </ul>
+{% endblock %}
