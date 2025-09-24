@@ -2,6 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import os
 from model_utils import predict_image
 from flask_dance.contrib.google import make_google_blueprint, google
+from functools import wraps
+from flask import redirect, url_for, session
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # --- Flask alapbeállítások ---
 app = Flask(__name__)
@@ -54,6 +64,7 @@ def models_page():
     return render_template("models.html")
 
 @app.route("/upload", methods=["GET", "POST"])
+@login_required
 def upload():
     prediction = None
     if request.method == "POST":
@@ -62,9 +73,7 @@ def upload():
             filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(filepath)
 
-            # 🔹 predikció a model_utils-ból
             prediction = predict_image(filepath)
-
             results.append({"filename": file.filename, "prediction": prediction})
 
     return render_template("upload.html", prediction=prediction)
