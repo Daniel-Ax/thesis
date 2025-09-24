@@ -3,7 +3,10 @@ import os
 from model_utils import predict_image
 from flask_dance.contrib.google import make_google_blueprint, google
 from functools import wraps
-from flask import redirect, url_for, session
+from dotenv import load_dotenv
+
+# --- Környezeti változók betöltése ---
+load_dotenv()
 
 def login_required(f):
     @wraps(f)
@@ -24,10 +27,33 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"  # csak lokálban engedélyezett
 google_bp = make_google_blueprint(
     client_id=os.environ.get("GOOGLE_CLIENT_ID"),
     client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
-    scope=["profile", "email"],
+    scope=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+    ],
     redirect_to="google_login"
 )
 app.register_blueprint(google_bp, url_prefix="/login")
+
+# --- Debug route-ok ---
+@app.route("/_oauth_debug")
+def oauth_debug():
+    cb = url_for("google.authorized", _external=True)
+    lg = url_for("google.login", _external=True)
+    return {"callback_must_be_whitelisted": cb, "login_url": lg}
+
+@app.route("/_client_debug")
+def client_debug():
+    return {
+        "GOOGLE_CLIENT_ID": os.environ.get("GOOGLE_CLIENT_ID"),
+        "GOOGLE_CLIENT_SECRET_SET": bool(os.environ.get("GOOGLE_CLIENT_SECRET")),
+        "registered_redirect": url_for("google.authorized", _external=True),
+    }
+
+@app.route("/_user_debug")
+def user_debug():
+    return {"session_user": session.get("user")}
 
 # --- Google login/logout route-ok ---
 @app.route("/login")
@@ -38,8 +64,19 @@ def login():
 def google_login():
     if not google.authorized:
         return redirect(url_for("google.login"))
-    resp = google.get("/oauth2/v2/userinfo")
-    user_info = resp.json()
+
+    resp = google.get("https://www.googleapis.com/oauth2/v3/userinfo")
+
+    if not resp or not resp.ok:
+        return f"Google API hiba: {resp.text}", 500
+
+    try:
+        user_info = resp.json()
+    except Exception as e:
+        return f"Nem sikerült JSON-ná alakítani a választ: {resp.text} | Hiba: {e}", 500
+
+    print("USER_INFO:", user_info)  # Debug konzolra
+
     session["user"] = user_info
     return redirect(url_for("home"))
 
