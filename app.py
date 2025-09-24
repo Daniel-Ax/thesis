@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import os
+from model_utils import predict_image
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "uploads"
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-# Fake eredmények tárolása
 results = []
 
 @app.route("/")
@@ -29,10 +29,9 @@ def upload():
             filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(filepath)
 
-            # 🔹 Helyőrző modellpredikció
-            prediction = "Predikció: Pneumonia (PLACEHOLDER)"
+            # 🔹 predikció a model_utils-ból
+            prediction = predict_image(filepath)
 
-            # Eredmények listába mentése
             results.append({"filename": file.filename, "prediction": prediction})
 
     return render_template("upload.html", prediction=prediction)
