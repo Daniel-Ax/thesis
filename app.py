@@ -56,6 +56,7 @@ def home():
     return render_template("index.html")
 
 @app.route("/results")
+@login_required
 def results_page():
     return render_template("results.html", results=results)
 
