@@ -15,15 +15,29 @@
   <!-- NAVBAR -->
   <header class="bg-gray-800 shadow-lg">
     <div class="container mx-auto flex justify-between items-center p-4">
+      <!-- Logo -->
       <div class="flex items-center gap-2">
         <img src="{{ url_for('static', filename='pulmoai_logo.png') }}" alt="PulmoAI logo" class="h-12 w-12">
         <span class="font-bold text-xl">PulmoAI</span>
       </div>
-      <nav class="flex gap-6">
+
+      <!-- Menü -->
+      <nav class="flex gap-6 items-center">
         <a href="{{ url_for('home') }}" class="hover:text-blue-400">Főoldal</a>
-        <a href="{{ url_for('results_page') }}" class="hover:text-blue-400">Eredmények</a>
         <a href="{{ url_for('models_page') }}" class="hover:text-blue-400">Modelljeink</a>
-        <a href="{{ url_for('upload') }}" class="hover:text-blue-400">Röntgen feltöltése</a>
+
+        {% if session.user %}
+          <a href="{{ url_for('results_page') }}" class="hover:text-blue-400">Eredmények</a>
+          <a href="{{ url_for('upload') }}" class="hover:text-blue-400">Röntgen feltöltése</a>
+        {% endif %}
+
+        <!-- Jobb oldal: Login/Logout -->
+        {% if session.user %}
+          <span class="text-sm text-gray-300">👤 {{ session.user["email"] }}</span>
+          <a href="{{ url_for('logout') }}" class="px-3 py-1 bg-red-500 rounded hover:bg-red-600 text-white">Kijelentkezés</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="px-3 py-1 bg-blue-500 rounded hover:bg-blue-600 text-white">Google Login</a>
+        {% endif %}
       </nav>
     </div>
   </header>
@@ -33,6 +47,7 @@
     {% block content %}{% endblock %}
   </main>
 
+  <!-- FOOTER -->
   <footer class="bg-gray-800 text-center text-sm p-4">
     © 2025 PulmoAI | Az itt megjelenített eredmények tájékoztató jellegűek, diagnózist csak orvos állíthat fel.
   </footer>
