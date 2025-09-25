@@ -107,12 +107,14 @@ def upload():
     prediction = None
     if request.method == "POST":
         file = request.files.get("file")
+        model_name = request.form.get("model", "cnn")  # <- kiválasztott modell
+
         if file and file.filename:
             filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(filepath)
 
-            prediction = predict_image(filepath)
-            results.append({"filename": file.filename, "prediction": prediction})
+            prediction = predict_image(filepath, model_name=model_name)
+            results.append({"filename": file.filename, "prediction": prediction, "model": model_name})
 
     return render_template("upload.html", prediction=prediction)
 
