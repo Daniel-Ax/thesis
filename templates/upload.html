@@ -4,13 +4,12 @@
 
   <form method="POST" enctype="multipart/form-data" class="space-y-4">
     <input type="file" name="file" required class="block text-sm text-gray-300" />
-
     <label for="model" class="block text-sm">Modell kiválasztása:</label>
     <select name="model" id="model" class="bg-gray-700 text-white p-2 rounded">
       <option value="cnn">Saját CNN modell</option>
-      <option value="vit" disabled>Vision Transformer (Hamarosan)</option>
-      <option value="hybrid" disabled>Hibrid CNN+ViT (Hamarosan)</option>
-      <option value="ensemble" disabled>Ensemble módszer (Hamarosan)</option>
+      <option value="vit">Vision Transformer (dummy)</option>
+      <option value="hybrid">Hibrid CNN+ViT (dummy)</option>
+      <option value="ensemble">Ensemble módszer (dummy)</option>
     </select>
 
     <button type="submit" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
