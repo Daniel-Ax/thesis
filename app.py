@@ -105,18 +105,23 @@ def models_page():
 @login_required
 def upload():
     prediction = None
+    model_name = None
     if request.method == "POST":
         file = request.files.get("file")
-        model_name = request.form.get("model", "cnn")  # <- kiválasztott modell
+        model_name = request.form.get("model", "cnn")
 
         if file and file.filename:
             filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(filepath)
 
             prediction = predict_image(filepath, model_name=model_name)
-            results.append({"filename": file.filename, "prediction": prediction, "model": model_name})
+            results.append({
+                "filename": file.filename,
+                "prediction": prediction,
+                "model": model_name
+            })
 
-    return render_template("upload.html", prediction=prediction)
+    return render_template("upload.html", prediction=prediction, model=model_name)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render adja a PORT-ot
