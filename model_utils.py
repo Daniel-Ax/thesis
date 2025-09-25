@@ -4,24 +4,23 @@ from PIL import Image
 import os
 from model_def import SimpleCNN  # Saját CNN definíció
 
-# Példa: modellek betöltése
+# --- Globális modell tároló ---
 models = {}
 
 def load_models():
     global models
     models = {
         "cnn": SimpleCNN(num_classes=3),
-        # később: "vit": VisionTransformerModel(...),
-        # később: "hybrid": HybridModel(...),
     }
 
-    # Betöltjük a súlyokat
+    # CNN súlyok betöltése
     models["cnn"].load_state_dict(torch.load("models/cnn_best_model.pth", map_location="cpu"))
     models["cnn"].eval()
 
-    # Helyfoglalók (majd később ténylegesen betöltöd a ViT, Hybrid, Ensemble stb.)
-    # models["vit"] = ...
-    # models["hybrid"] = ...
+    # Dummy modellek – csak demonstráció
+    models["vit"] = lambda x: "NORMAL"       # mindig NORMAL
+    models["hybrid"] = lambda x: "COVID"     # mindig COVID
+    models["ensemble"] = lambda x: "PNEUMONIA"  # mindig PNEUMONIA
 
 load_models()
 
@@ -42,6 +41,9 @@ def predict_image(filepath, model_name="cnn"):
     model = models[model_name]
     img = Image.open(filepath)
     img = transform(img).unsqueeze(0)
+
+    if callable(model):  # dummy modellek
+        return model(filepath)
 
     with torch.no_grad():
         outputs = model(img)
