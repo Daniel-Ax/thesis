@@ -19,11 +19,18 @@
         <img src="{{ url_for('static', filename='pulmoai_logo.png') }}" alt="PulmoAI logo" class="h-12 w-12">
         <span class="font-bold text-xl">PulmoAI</span>
       </div>
-      <nav class="flex gap-6">
+      <nav class="flex gap-6 items-center">
         <a href="{{ url_for('home') }}" class="hover:text-blue-400">Főoldal</a>
-        <a href="{{ url_for('results_page') }}" class="hover:text-blue-400">Eredmények</a>
-        <a href="{{ url_for('models_page') }}" class="hover:text-blue-400">Modelljeink</a>
-        <a href="{{ url_for('upload') }}" class="hover:text-blue-400">Röntgen feltöltése</a>
+        {% if session.get("user") %}
+          <a href="{{ url_for('results_page') }}" class="hover:text-blue-400">Eredmények</a>
+          <a href="{{ url_for('models_page') }}" class="hover:text-blue-400">Modelljeink</a>
+          <a href="{{ url_for('upload') }}" class="hover:text-blue-400">Röntgen feltöltése</a>
+          <span class="text-gray-300 text-sm">👤 {{ session['user']['email'] }}</span>
+          <a href="{{ url_for('logout') }}" class="text-red-400 hover:text-red-500 font-semibold">Kijelentkezés</a>
+        {% else %}
+          <a href="{{ url_for('models_page') }}" class="hover:text-blue-400">Modelljeink</a>
+          <a href="{{ url_for('login') }}" class="text-green-400 hover:text-green-500 font-semibold">Bejelentkezés Google-lel</a>
+        {% endif %}
       </nav>
     </div>
   </header>
